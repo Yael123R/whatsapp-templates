@@ -1,5 +1,5 @@
 // Estado Central
-// --- LAB 14 HU2 & HU4: editandoId para edición, filtro para búsqueda por hashtag ---
+// --- LAB 14 HU2 & HU4: editandoId para edición, filtro para búsqueda ---
 const state = { plantillas: [], editandoId: null, filtro: "" };
 
 // Referencias del DOM para la lista y formulario
@@ -8,6 +8,7 @@ const form = document.getElementById("form-plantilla");
 const inputTitulo = document.getElementById("titulo");
 const inputHashtag = document.getElementById("hashtag");
 const inputMensaje = document.getElementById("mensaje");
+const btnSubmit = document.getElementById("btn-submit"); // Logro Adicional 2
 
 // Referencias del DOM para el generador
 const selector = document.getElementById("selector");
@@ -37,15 +38,22 @@ function agregarPlantilla(titulo, mensaje, hashtag) {
   state.plantillas.push(nueva);
 }
 
-// --- LAB 14 HU1: Eliminar plantilla del estado de forma inmutable ---
+// --- LAB 14 HU1 & Logro Adicional 1: Confirmación de borrado ---
 function eliminarPlantilla(id) {
-  state.plantillas = state.plantillas.filter(
-    (plantilla) => plantilla.id !== id,
+  const plantilla = state.plantillas.find((p) => p.id === id);
+  const seguro = confirm(
+    `¿Estás seguro de que deseas eliminar la plantilla "${plantilla ? plantilla.titulo : "seleccionada"}"?`,
   );
-  render();
+
+  if (seguro) {
+    state.plantillas = state.plantillas.filter(
+      (plantilla) => plantilla.id !== id,
+    );
+    render();
+  }
 }
 
-// --- LAB 14 HU2: Cargar datos de la plantilla seleccionada en el formulario ---
+// --- LAB 14 HU2 & Logro Adicional 2: Cargar datos y cambiar estado visual del formulario ---
 function cargarEnFormulario(id) {
   const plantilla = state.plantillas.find((p) => p.id === id);
   if (!plantilla) return;
@@ -53,7 +61,23 @@ function cargarEnFormulario(id) {
   inputTitulo.value = plantilla.titulo;
   inputMensaje.value = plantilla.mensaje;
   inputHashtag.value = plantilla.hashtag;
-  state.editandoId = id; // Guardamos la referencia de la plantilla que se está editando
+  state.editandoId = id;
+
+  // Logro Adicional 2: Cambiar apariencia del formulario y botón
+  btnSubmit.textContent = "💾 Actualizar plantilla";
+  btnSubmit.className =
+    "bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-medium transition cursor-pointer";
+  form.classList.add("ring-2", "ring-blue-500");
+}
+
+// Restablecer el formulario al estado predeterminado de creación
+function resetearFormulario() {
+  form.reset();
+  state.editandoId = null;
+  btnSubmit.textContent = "Agregar plantilla";
+  btnSubmit.className =
+    "bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded font-medium transition cursor-pointer";
+  form.classList.remove("ring-2", "ring-blue-500");
 }
 
 // --- LAB 14 HU3: Función pura que cuenta plantillas agrupadas por hashtag ---
@@ -88,12 +112,16 @@ function renderStats() {
     </div>`;
 }
 
-// --- LAB 14 HU4: Función derivada que retorna las plantillas filtradas ---
+// --- LAB 14 HU4 & Logro Adicional 3: Buscador flexible (hashtag, título o mensaje) ---
 function plantillasVisibles() {
   const filtroTexto = (state.filtro ?? "").toLowerCase();
   if (filtroTexto === "") return state.plantillas;
-  return state.plantillas.filter((plantilla) =>
-    plantilla.hashtag.toLowerCase().includes(filtroTexto),
+
+  return state.plantillas.filter(
+    (plantilla) =>
+      plantilla.hashtag.toLowerCase().includes(filtroTexto) ||
+      plantilla.titulo.toLowerCase().includes(filtroTexto) ||
+      plantilla.mensaje.toLowerCase().includes(filtroTexto),
   );
 }
 
@@ -111,7 +139,7 @@ function renderSelector() {
 function render() {
   lista.innerHTML = "";
 
-  // --- LAB 14 HU4: Recorremos únicamente las plantillas visibles ---
+  // --- LAB 14 HU4: Recorremos las plantillas visibles ---
   plantillasVisibles().forEach(function (plantilla) {
     const fechaTexto = plantilla.fecha.toLocaleDateString("es-PE");
 
@@ -125,7 +153,7 @@ function render() {
     li.className =
       "bg-white p-4 rounded-lg shadow flex flex-col justify-between";
 
-    // --- LAB 14 HU1 & HU2: Agregamos botones Editar y Eliminar con data-id ---
+    // --- LAB 14 HU1 & HU2: Agregamos botones Editar y Eliminar ---
     li.innerHTML = `
       <div>
         <div class="flex items-start justify-between gap-2">
@@ -159,7 +187,7 @@ function render() {
   });
 
   renderSelector();
-  // --- LAB 14 HU3: Renderizar estadísticas sincronizadas al final (calcula sobre el total real) ---
+  // --- LAB 14 HU3: Renderizar estadísticas sincronizadas al final ---
   renderStats();
 }
 
@@ -171,7 +199,7 @@ document
     render();
   });
 
-// --- LAB 14 HU1 & HU2: Delegación de eventos en el elemento contenedor (lista) ---
+// --- LAB 14 HU1 & HU2: Delegación de eventos en el contenedor ---
 lista.addEventListener("click", function (evento) {
   const id = evento.target.dataset.id;
   if (evento.target.classList.contains("btn-eliminar")) {
@@ -183,7 +211,7 @@ lista.addEventListener("click", function (evento) {
 });
 
 // Conectar al formulario
-// --- LAB 14 HU2: Decide si actualiza una plantilla existente o agrega una nueva ---
+// --- LAB 14 HU2 & Logro Adicional 2: Actualiza o guarda según el modo ---
 form.addEventListener("submit", function (evento) {
   evento.preventDefault();
 
@@ -207,7 +235,6 @@ form.addEventListener("submit", function (evento) {
           }
         : plantilla,
     );
-    state.editandoId = null;
   } else {
     // Creación
     agregarPlantilla(
@@ -218,7 +245,7 @@ form.addEventListener("submit", function (evento) {
   }
 
   render();
-  form.reset();
+  resetearFormulario();
 });
 
 // Evento para generar el mensaje dinámico (LAB 13 Logro 3)
