@@ -1,5 +1,6 @@
 // Estado Central
-const state = { plantillas: [] };
+// --- LAB 14 HU2: Se agrega editandoId al estado para controlar si creamos o editamos ---
+const state = { plantillas: [], editandoId: null };
 
 // Referencias del DOM para la lista y formulario
 const lista = document.getElementById("listaPlantillas");
@@ -14,7 +15,7 @@ const salida = document.getElementById("mensaje-final");
 const btnGenerar = document.getElementById("btn-generar");
 const btnCopiar = document.getElementById("btn-copiar");
 
-// LAB HU3: Función para normalizar hashtags
+// LAB 13 HU3: Función para normalizar hashtags
 function normalizarHashtag(texto) {
   let limpio = texto.trim().toLowerCase().replaceAll(" ", "");
   if (limpio.endsWith("#") && limpio.length > 1) {
@@ -44,6 +45,17 @@ function eliminarPlantilla(id) {
   render();
 }
 
+// --- LAB 14 HU2: Cargar datos de la plantilla seleccionada en el formulario ---
+function cargarEnFormulario(id) {
+  const plantilla = state.plantillas.find((p) => p.id === id);
+  if (!plantilla) return;
+
+  inputTitulo.value = plantilla.titulo;
+  inputMensaje.value = plantilla.mensaje;
+  inputHashtag.value = plantilla.hashtag;
+  state.editandoId = id; // Guardamos la referencia de la plantilla que se está editando
+}
+
 // Mantiene actualizado el selector
 function renderSelector() {
   selector.innerHTML = state.plantillas
@@ -71,7 +83,7 @@ function render() {
     li.className =
       "bg-white p-4 rounded-lg shadow flex flex-col justify-between";
 
-    // --- LAB 14 HU1: Se agrega la fila de acciones con el botón .btn-eliminar y data-id ---
+    // --- LAB 14 HU1 & HU2: Agregamos botones Editar y Eliminar con data-id ---
     li.innerHTML = `
       <div>
         <div class="flex items-start justify-between gap-2">
@@ -89,6 +101,11 @@ function render() {
         </div>
 
         <div class="flex gap-2 mt-3 pt-2 border-t border-slate-100">
+          <!-- LAB 14 HU2: Botón Editar -->
+          <button class="btn-editar text-xs px-2.5 py-1 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition cursor-pointer" data-id="${plantilla.id}">
+            Editar
+          </button>
+          <!-- LAB 14 HU1: Botón Eliminar -->
           <button class="btn-eliminar text-xs px-2.5 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition cursor-pointer" data-id="${plantilla.id}">
             Eliminar
           </button>
@@ -102,15 +119,19 @@ function render() {
   renderSelector();
 }
 
-// --- LAB 14 HU1: Delegación de eventos en el elemento contenedor (lista) ---
+// --- LAB 14 HU1 & HU2: Delegación de eventos en el elemento contenedor (lista) ---
 lista.addEventListener("click", function (evento) {
+  const id = evento.target.dataset.id;
   if (evento.target.classList.contains("btn-eliminar")) {
-    const id = evento.target.dataset.id;
     eliminarPlantilla(id);
+  }
+  if (evento.target.classList.contains("btn-editar")) {
+    cargarEnFormulario(id);
   }
 });
 
 // Conectar al formulario
+// --- LAB 14 HU2: Decide si actualiza una plantilla existente o agrega una nueva ---
 form.addEventListener("submit", function (evento) {
   evento.preventDefault();
 
@@ -122,17 +143,33 @@ form.addEventListener("submit", function (evento) {
     return;
   }
 
-  agregarPlantilla(
-    tituloTexto,
-    mensajeTexto,
-    normalizarHashtag(inputHashtag.value),
-  );
-  render();
+  if (state.editandoId) {
+    // Actualización inmutable
+    state.plantillas = state.plantillas.map((plantilla) =>
+      plantilla.id === state.editandoId
+        ? {
+            ...plantilla,
+            titulo: tituloTexto,
+            mensaje: mensajeTexto,
+            hashtag: normalizarHashtag(inputHashtag.value),
+          }
+        : plantilla,
+    );
+    state.editandoId = null;
+  } else {
+    // Creación
+    agregarPlantilla(
+      tituloTexto,
+      mensajeTexto,
+      normalizarHashtag(inputHashtag.value),
+    );
+  }
 
+  render();
   form.reset();
 });
 
-// Evento para generar el mensaje dinámico (Logro 3)
+// Evento para generar el mensaje dinámico (LAB 13 Logro 3)
 btnGenerar.addEventListener("click", function () {
   if (state.plantillas.length === 0) return;
 
