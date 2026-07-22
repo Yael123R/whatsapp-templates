@@ -35,7 +35,7 @@
           <textarea
             id="mensaje"
             rows="3"
-            placeholder="Mensaje (usa {nombre})"
+            placeholder="Mensaje (usa {nombre} y {producto})"
             class="p-2 border border-slate-300 rounded"
           ></textarea>
           <button class="bg-emerald-600 text-white py-2 rounded">
@@ -43,7 +43,7 @@
           </button>
         </form>
 
-        <!-- ⚡ HU4: Generador de Mensaje Final -->
+        <!-- Generador de Mensaje Final -->
         <section
           id="generador"
           class="bg-white p-4 rounded-xl shadow grid gap-3"
@@ -64,6 +64,17 @@
               id="valorNombre"
               type="text"
               placeholder="ej. Ana"
+              class="p-2 border border-slate-300 rounded text-slate-800"
+            />
+          </label>
+
+          <!-- Logro 3: Campo de producto adicionado -->
+          <label class="grid gap-1 text-xs text-slate-500">
+            Producto
+            <input
+              id="valorProducto"
+              type="text"
+              placeholder="ej. Zapatillas"
               class="p-2 border border-slate-300 rounded text-slate-800"
             />
           </label>
