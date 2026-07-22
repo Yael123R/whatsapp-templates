@@ -104,11 +104,12 @@
         </section>
       </div>
 
-      <!-- Columna derecha: grid de tarjetas -->
-      <ul
-        id="listaPlantillas"
-        class="grid gap-3 sm:grid-cols-2 content-start"
-      ></ul>
+      <!-- Columna derecha: estadísticas + grid de tarjetas (LAB 14 HU3) -->
+      <div class="grid gap-4 content-start">
+        <aside id="panel-stats" class="bg-slate-200/60 rounded-lg p-3"></aside>
+
+        <ul id="listaPlantillas" class="grid gap-3 sm:grid-cols-2"></ul>
+      </div>
     </div>
 
     <script src="js/models/Template.js"></script>

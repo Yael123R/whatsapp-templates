@@ -56,6 +56,38 @@ function cargarEnFormulario(id) {
   state.editandoId = id; // Guardamos la referencia de la plantilla que se está editando
 }
 
+// --- LAB 14 HU3: Función pura que cuenta plantillas agrupadas por hashtag ---
+function contarPorHashtag(plantillas) {
+  const conteo = {};
+  plantillas.forEach(function (plantilla) {
+    const elHashtag = plantilla.hashtag;
+    if (conteo[elHashtag]) {
+      conteo[elHashtag] = conteo[elHashtag] + 1;
+    } else {
+      conteo[elHashtag] = 1;
+    }
+  });
+  return conteo;
+}
+
+// --- LAB 14 HU3: Renderizado del panel de estadísticas ---
+function renderStats() {
+  const total = state.plantillas.length;
+  const porTag = contarPorHashtag(state.plantillas);
+  const etiquetas = Object.entries(porTag)
+    .map(
+      ([hashtag, cantidad]) =>
+        `<span class="text-xs bg-white border border-slate-200 text-slate-700 font-medium px-2 py-0.5 rounded-full">${hashtag} · ${cantidad}</span>`,
+    )
+    .join("");
+
+  document.getElementById("panel-stats").innerHTML = `
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class="text-sm font-semibold text-slate-800">${total} plantilla(s)</span>
+      ${etiquetas}
+    </div>`;
+}
+
 // Mantiene actualizado el selector
 function renderSelector() {
   selector.innerHTML = state.plantillas
@@ -117,6 +149,8 @@ function render() {
   });
 
   renderSelector();
+  // --- LAB 14 HU3: Renderizar estadísticas sincronizadas al final ---
+  renderStats();
 }
 
 // --- LAB 14 HU1 & HU2: Delegación de eventos en el elemento contenedor (lista) ---
