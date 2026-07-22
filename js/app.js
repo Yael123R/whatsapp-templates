@@ -14,7 +14,7 @@ const salida = document.getElementById("mensaje-final");
 const btnGenerar = document.getElementById("btn-generar");
 const btnCopiar = document.getElementById("btn-copiar");
 
-// HU3: Función para normalizar hashtags
+// LAB HU3: Función para normalizar hashtags
 function normalizarHashtag(texto) {
   let limpio = texto.trim().toLowerCase().replaceAll(" ", "");
   if (limpio.endsWith("#") && limpio.length > 1) {
@@ -24,7 +24,7 @@ function normalizarHashtag(texto) {
   return limpio.startsWith("#") ? limpio : "#" + limpio;
 }
 
-// Logro 3: Soporta {nombre} y {producto} encadenando reemplazos
+// LAB 13 Logro 3: Soporta {nombre} y {producto} encadenando reemplazos
 function generarMensajeFinal(plantilla, valorNombre, valorProducto) {
   return plantilla.mensaje
     .replaceAll("{nombre}", valorNombre)
@@ -34,6 +34,14 @@ function generarMensajeFinal(plantilla, valorNombre, valorProducto) {
 function agregarPlantilla(titulo, mensaje, hashtag) {
   const nueva = new Template(titulo, mensaje, hashtag);
   state.plantillas.push(nueva);
+}
+
+// --- LAB 14 HU1: Eliminar plantilla del estado de forma inmutable ---
+function eliminarPlantilla(id) {
+  state.plantillas = state.plantillas.filter(
+    (plantilla) => plantilla.id !== id,
+  );
+  render();
 }
 
 // Mantiene actualizado el selector
@@ -53,7 +61,7 @@ function render() {
   state.plantillas.forEach(function (plantilla) {
     const fechaTexto = plantilla.fecha.toLocaleDateString("es-PE");
 
-    // Logro 2: Recortar texto si supera los 60 caracteres
+    // LAB 13 Logro 2: Recortar texto si supera los 60 caracteres
     const mensajeRecortado =
       plantilla.mensaje.length > 60
         ? plantilla.mensaje.slice(0, 60) + "…"
@@ -63,6 +71,7 @@ function render() {
     li.className =
       "bg-white p-4 rounded-lg shadow flex flex-col justify-between";
 
+    // --- LAB 14 HU1: Se agrega la fila de acciones con el botón .btn-eliminar y data-id ---
     li.innerHTML = `
       <div>
         <div class="flex items-start justify-between gap-2">
@@ -72,10 +81,18 @@ function render() {
         <p class="text-sm text-slate-600 mt-1">${mensajeRecortado}</p>
       </div>
       
-      <div class="flex items-center justify-between mt-3 text-xs text-slate-500 border-t pt-2 border-slate-100">
-        <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">${plantilla.hashtag}</span>
-        <!-- Logro 1: Contador de caracteres -->
-        <span>${plantilla.mensaje.length} caracteres</span>
+      <div>
+        <div class="flex items-center justify-between mt-3 text-xs text-slate-500 border-t pt-2 border-slate-100">
+          <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">${plantilla.hashtag}</span>
+          <!-- Logro 1: Contador de caracteres -->
+          <span>${plantilla.mensaje.length} caracteres</span>
+        </div>
+
+        <div class="flex gap-2 mt-3 pt-2 border-t border-slate-100">
+          <button class="btn-eliminar text-xs px-2.5 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition cursor-pointer" data-id="${plantilla.id}">
+            Eliminar
+          </button>
+        </div>
       </div>
     `;
 
@@ -84,6 +101,14 @@ function render() {
 
   renderSelector();
 }
+
+// --- LAB 14 HU1: Delegación de eventos en el elemento contenedor (lista) ---
+lista.addEventListener("click", function (evento) {
+  if (evento.target.classList.contains("btn-eliminar")) {
+    const id = evento.target.dataset.id;
+    eliminarPlantilla(id);
+  }
+});
 
 // Conectar al formulario
 form.addEventListener("submit", function (evento) {
