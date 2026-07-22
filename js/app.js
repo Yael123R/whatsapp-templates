@@ -150,45 +150,76 @@ function render() {
         : plantilla.mensaje;
 
     const li = document.createElement("li");
+
     li.className =
       "bg-white p-4 rounded-lg shadow flex flex-col justify-between";
 
     // --- LAB 14 HU1 & HU2: Agregamos botones Editar y Eliminar ---
     li.innerHTML = `
-      <div>
-        <div class="flex items-start justify-between gap-2">
-          <strong class="text-slate-800">${plantilla.titulo}</strong>
-          <span class="text-xs text-slate-400 shrink-0">${fechaTexto}</span>
+  
+        <div>
+  
+          <div class="flex items-start justify-between gap-2">
+  
+            <strong class="text-slate-800">${plantilla.titulo}</strong>
+  
+            <span class="text-xs text-slate-400 shrink-0">${fechaTexto}</span>
+  
+          </div>
+  
+          <p class="text-sm text-slate-600 mt-1">${mensajeRecortado}</p>
+  
         </div>
-        <p class="text-sm text-slate-600 mt-1">${mensajeRecortado}</p>
-      </div>
-      
-      <div>
-        <div class="flex items-center justify-between mt-3 text-xs text-slate-500 border-t pt-2 border-slate-100">
-          <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">${plantilla.hashtag}</span>
-          <!-- Logro 1: Contador de caracteres -->
-          <span>${plantilla.mensaje.length} caracteres</span>
+  
+        
+  
+        <div>
+  
+          <div class="flex items-center justify-between mt-3 text-xs text-slate-500 border-t pt-2 border-slate-100">
+  
+            <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">${plantilla.hashtag}</span>
+  
+            <!-- Logro 1: Contador de caracteres -->
+  
+            <span>${plantilla.mensaje.length} caracteres</span>
+  
+          </div>
+  
+  
+          <div class="flex gap-2 mt-3 pt-2 border-t border-slate-100">
+  
+            <!-- LAB 14 HU2: Botón Editar -->
+  
+            <button class="btn-editar text-xs px-2.5 py-1 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition cursor-pointer" data-id="${plantilla.id}">
+  
+              Editar
+  
+            </button>
+  
+            <!-- LAB 14 HU1: Botón Eliminar -->
+  
+            <button class="btn-eliminar text-xs px-2.5 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition cursor-pointer" data-id="${plantilla.id}">
+  
+              Eliminar
+  
+            </button>
+  
+          </div>
+  
         </div>
-
-        <div class="flex gap-2 mt-3 pt-2 border-t border-slate-100">
-          <!-- LAB 14 HU2: Botón Editar -->
-          <button class="btn-editar text-xs px-2.5 py-1 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition cursor-pointer" data-id="${plantilla.id}">
-            Editar
-          </button>
-          <!-- LAB 14 HU1: Botón Eliminar -->
-          <button class="btn-eliminar text-xs px-2.5 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition cursor-pointer" data-id="${plantilla.id}">
-            Eliminar
-          </button>
-        </div>
-      </div>
-    `;
+  
+      `;
 
     lista.appendChild(li);
   });
 
   renderSelector();
+
   // --- LAB 14 HU3: Renderizar estadísticas sincronizadas al final ---
   renderStats();
+
+  // --- LAB 15 HU1: Guardar automáticamente en localStorage ---
+  guardar();
 }
 
 // --- LAB 14 HU4: Evento del buscador para guardar el filtro y redibujar ---
