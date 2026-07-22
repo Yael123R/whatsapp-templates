@@ -1,6 +1,6 @@
 // Estado Central
-// --- LAB 14 HU2: Se agrega editandoId al estado para controlar si creamos o editamos ---
-const state = { plantillas: [], editandoId: null };
+// --- LAB 14 HU2 & HU4: editandoId para edición, filtro para búsqueda por hashtag ---
+const state = { plantillas: [], editandoId: null, filtro: "" };
 
 // Referencias del DOM para la lista y formulario
 const lista = document.getElementById("listaPlantillas");
@@ -88,6 +88,15 @@ function renderStats() {
     </div>`;
 }
 
+// --- LAB 14 HU4: Función derivada que retorna las plantillas filtradas ---
+function plantillasVisibles() {
+  const filtroTexto = (state.filtro ?? "").toLowerCase();
+  if (filtroTexto === "") return state.plantillas;
+  return state.plantillas.filter((plantilla) =>
+    plantilla.hashtag.toLowerCase().includes(filtroTexto),
+  );
+}
+
 // Mantiene actualizado el selector
 function renderSelector() {
   selector.innerHTML = state.plantillas
@@ -102,7 +111,8 @@ function renderSelector() {
 function render() {
   lista.innerHTML = "";
 
-  state.plantillas.forEach(function (plantilla) {
+  // --- LAB 14 HU4: Recorremos únicamente las plantillas visibles ---
+  plantillasVisibles().forEach(function (plantilla) {
     const fechaTexto = plantilla.fecha.toLocaleDateString("es-PE");
 
     // LAB 13 Logro 2: Recortar texto si supera los 60 caracteres
@@ -149,9 +159,17 @@ function render() {
   });
 
   renderSelector();
-  // --- LAB 14 HU3: Renderizar estadísticas sincronizadas al final ---
+  // --- LAB 14 HU3: Renderizar estadísticas sincronizadas al final (calcula sobre el total real) ---
   renderStats();
 }
+
+// --- LAB 14 HU4: Evento del buscador para guardar el filtro y redibujar ---
+document
+  .getElementById("buscador")
+  .addEventListener("input", function (evento) {
+    state.filtro = evento.target.value;
+    render();
+  });
 
 // --- LAB 14 HU1 & HU2: Delegación de eventos en el elemento contenedor (lista) ---
 lista.addEventListener("click", function (evento) {

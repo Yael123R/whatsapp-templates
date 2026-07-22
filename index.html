@@ -104,10 +104,20 @@
         </section>
       </div>
 
-      <!-- Columna derecha: estadísticas + grid de tarjetas (LAB 14 HU3) -->
+      <!-- Columna derecha: buscador + estadísticas + grid de tarjetas -->
       <div class="grid gap-4 content-start">
+        <!-- Buscador por hashtag (LAB 14 HU4) -->
+        <input
+          id="buscador"
+          type="text"
+          placeholder="Filtra por hashtag…"
+          class="w-full p-2 border border-slate-300 rounded-lg text-slate-800 bg-white shadow-sm"
+        />
+
+        <!-- Panel de estadísticas (LAB 14 HU3) -->
         <aside id="panel-stats" class="bg-slate-200/60 rounded-lg p-3"></aside>
 
+        <!-- Lista de plantillas -->
         <ul id="listaPlantillas" class="grid gap-3 sm:grid-cols-2"></ul>
       </div>
     </div>
