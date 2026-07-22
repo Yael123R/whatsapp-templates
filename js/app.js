@@ -8,6 +8,13 @@ const inputTitulo = document.getElementById("titulo");
 const inputHashtag = document.getElementById("hashtag");
 const inputMensaje = document.getElementById("mensaje");
 
+// HU3: Función para normalizar hashtags con métodos de String
+function normalizarHashtag(texto) {
+  const limpio = texto.trim().toLowerCase();
+  if (limpio.length === 0) return "#general";
+  return limpio.startsWith("#") ? limpio : "#" + limpio;
+}
+
 function agregarPlantilla(titulo, mensaje, hashtag) {
   const nueva = new Template(titulo, mensaje, hashtag);
   state.plantillas.push(nueva);
@@ -40,7 +47,22 @@ function render() {
 form.addEventListener("submit", function (evento) {
   evento.preventDefault();
 
-  agregarPlantilla(inputTitulo.value, inputMensaje.value, inputHashtag.value);
+  // HU3: Limpieza de espacios sobrantes en título y mensaje
+  const tituloTexto = inputTitulo.value.trim();
+  const mensajeTexto = inputMensaje.value.trim();
+
+  // HU3: Validación - evitar guardar con título o mensaje vacíos
+  if (tituloTexto.length === 0 || mensajeTexto.length === 0) {
+    alert("Título y mensaje son obligatorios");
+    return;
+  }
+
+  // HU3: Guardamos usando la función normalizarHashtag()
+  agregarPlantilla(
+    tituloTexto,
+    mensajeTexto,
+    normalizarHashtag(inputHashtag.value),
+  );
   render();
 
   form.reset();
