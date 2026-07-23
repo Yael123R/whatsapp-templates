@@ -1,11 +1,20 @@
-// Clave única para guardar en el almacenamiento local del navegador
 const CLAVE = "whatsapp-templates";
 
 /**
- * Serializa y guarda el listado de plantillas en localStorage
+ * Serializa y guarda el listado de plantillas en localStorage.
+ * Si no hay plantillas, elimina la clave. Actualiza el indicador de estado.
  */
 function guardar() {
-  localStorage.setItem(CLAVE, JSON.stringify(state.plantillas));
+  // Si no hay plantillas, borra la clave; si hay, las guarda en JSON
+  state.plantillas.length === 0
+    ? localStorage.removeItem(CLAVE)
+    : localStorage.setItem(CLAVE, JSON.stringify(state.plantillas));
+
+  // Actualiza el indicador visual de estado en el DOM
+  const elEstado = document.getElementById("estado");
+  if (elEstado) {
+    elEstado.textContent = state.plantillas.length > 0 ? "Guardado ✓" : "Vacío";
+  }
 }
 
 /**
@@ -15,13 +24,11 @@ function guardar() {
 function cargar() {
   const guardado = localStorage.getItem(CLAVE);
 
-  // Si no hay nada guardado, retorna lista vacía
   if (!guardado) return [];
 
   try {
     return JSON.parse(guardado);
   } catch (error) {
-    // Si el JSON está mal formado, captura el error y evita que la app explote
     console.warn(
       "Datos corruptos en localStorage, se reinicia la lista:",
       error,
