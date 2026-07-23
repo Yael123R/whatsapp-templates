@@ -7,3 +7,12 @@ const CLAVE = "whatsapp-templates";
 function guardar() {
   localStorage.setItem(CLAVE, JSON.stringify(state.plantillas));
 }
+
+/**
+ * Recupera el texto de localStorage y lo deserializa con JSON.parse.
+ * Si no hay nada guardado, retorna un arreglo vacío.
+ */
+function cargar() {
+  const guardado = localStorage.getItem(CLAVE);
+  return guardado ? JSON.parse(guardado) : [];
+}

@@ -141,7 +141,7 @@ function render() {
 
   // --- LAB 14 HU4: Recorremos las plantillas visibles ---
   plantillasVisibles().forEach(function (plantilla) {
-    const fechaTexto = plantilla.fecha.toLocaleDateString("es-PE");
+    const fechaTexto = new Date(plantilla.fecha).toLocaleDateString("es-PE");
 
     // LAB 13 Logro 2: Recortar texto si supera los 60 caracteres
     const mensajeRecortado =
@@ -326,3 +326,7 @@ function copiarAlMetodoAntiguo(texto) {
   document.body.removeChild(areaAuxiliar);
   mostrarFeedbackCopiado();
 }
+
+// Carga del estado inicial al abrir o recargar la página
+state.plantillas = cargar();
+render();
