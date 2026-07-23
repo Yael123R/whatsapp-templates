@@ -1,16 +1,19 @@
 const CLAVE = "whatsapp-templates";
+const CLAVE_FILTRO = "whatsapp-templates-filtro"; // HU5: Clave para el filtro
 
 /**
- * Serializa y guarda el listado de plantillas en localStorage.
- * Si no hay plantillas, elimina la clave. Actualiza el indicador de estado.
+ * Serializa y guarda las plantillas y el filtro actual en localStorage.
  */
 function guardar() {
-  // Si no hay plantillas, borra la clave; si hay, las guarda en JSON
+  // Guardar o eliminar plantillas según si hay datos
   state.plantillas.length === 0
     ? localStorage.removeItem(CLAVE)
     : localStorage.setItem(CLAVE, JSON.stringify(state.plantillas));
 
-  // Actualiza el indicador visual de estado en el DOM
+  // HU5: Guardar el filtro directamente como texto (sin stringify)
+  localStorage.setItem(CLAVE_FILTRO, state.filtro ?? "");
+
+  // Indicador de estado visual (HU4)
   const elEstado = document.getElementById("estado");
   if (elEstado) {
     elEstado.textContent = state.plantillas.length > 0 ? "Guardado ✓" : "Vacío";
@@ -18,8 +21,7 @@ function guardar() {
 }
 
 /**
- * Recupera el texto de localStorage y lo deserializa con JSON.parse.
- * Protege la aplicación usando try/catch si los datos guardados están corruptos.
+ * Recupera las plantillas de localStorage.
  */
 function cargar() {
   const guardado = localStorage.getItem(CLAVE);

@@ -314,4 +314,12 @@ document.getElementById("btn-vaciar").addEventListener("click", function () {
 
 // Carga del estado inicial al abrir o recargar la página
 state.plantillas = cargar();
+
+// HU5: Recuperar el filtro de localStorage (o string vacío si no existe)
+state.filtro = localStorage.getItem("whatsapp-templates-filtro") ?? "";
+
+// HU5: Reflejar el filtro en el campo de texto del buscador
+document.getElementById("buscador").value = state.filtro;
+
+// Renderizar la app con el estado completo restaurado
 render();
