@@ -143,6 +143,9 @@ function render() {
   plantillasVisibles().forEach(function (plantilla) {
     const fechaTexto = new Date(plantilla.fecha).toLocaleDateString("es-PE");
 
+    // LAB 15 Logro 3: Indicador de si la plantilla fue editada
+    const textoEdicion = plantilla.editadaEl ? " (editado)" : "";
+
     // LAB 13 Logro 2: Recortar texto si supera los 60 caracteres
     const mensajeRecortado =
       plantilla.mensaje.length > 60
@@ -159,7 +162,7 @@ function render() {
         <div>
           <div class="flex items-start justify-between gap-2">
             <strong class="text-slate-800">${plantilla.titulo}</strong>
-            <span class="text-xs text-slate-400 shrink-0">${fechaTexto}</span>
+            <span class="text-xs text-slate-400 shrink-0">${fechaTexto}${textoEdicion}</span>
           </div>
           <p class="text-sm text-slate-600 mt-1">${mensajeRecortado}</p>
         </div>
@@ -229,7 +232,7 @@ form.addEventListener("submit", function (evento) {
   }
 
   if (state.editandoId) {
-    // Actualización inmutable
+    // Actualización inmutable + LAB 15 Logro 3: campo editadaEl
     state.plantillas = state.plantillas.map((plantilla) =>
       plantilla.id === state.editandoId
         ? {
@@ -237,6 +240,7 @@ form.addEventListener("submit", function (evento) {
             titulo: tituloTexto,
             mensaje: mensajeTexto,
             hashtag: normalizarHashtag(inputHashtag.value),
+            editadaEl: new Date(), // <-- LOGRO 3: Registra fecha de edición
           }
         : plantilla,
     );
@@ -312,6 +316,12 @@ document.getElementById("btn-vaciar").addEventListener("click", function () {
   }
 });
 
+// --- LAB 15 Logro 1: Función para exportar plantillas con sangría a la consola ---
+function exportarPlantillas() {
+  console.log("📦 Plantillas exportadas:");
+  console.log(JSON.stringify(state.plantillas, null, 2));
+}
+
 // Carga del estado inicial al abrir o recargar la página
 state.plantillas = cargar();
 
@@ -320,6 +330,9 @@ state.filtro = localStorage.getItem("whatsapp-templates-filtro") ?? "";
 
 // HU5: Reflejar el filtro en el campo de texto del buscador
 document.getElementById("buscador").value = state.filtro;
+
+// LAB 15 Logro 2: Registrar visita
+registrarVisita();
 
 // Renderizar la app con el estado completo restaurado
 render();

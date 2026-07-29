@@ -1,5 +1,6 @@
 const CLAVE = "whatsapp-templates";
 const CLAVE_FILTRO = "whatsapp-templates-filtro"; // HU5: Clave para el filtro
+const CLAVE_VISITAS = "whatsapp-templates-visitas"; // LAB 15 Logro 2: Clave para contador de visitas
 
 /**
  * Serializa y guarda las plantillas y el filtro actual en localStorage.
@@ -37,4 +38,13 @@ function cargar() {
     );
     return [];
   }
+}
+
+/**
+ * LAB 15 Logro 2: Registra e incrementa el contador de aperturas en localStorage.
+ */
+function registrarVisita() {
+  const visitas = Number(localStorage.getItem(CLAVE_VISITAS) ?? 0) + 1;
+  localStorage.setItem(CLAVE_VISITAS, visitas);
+  console.log(`🚀 Esta app se ha abierto ${visitas} vez/veces.`);
 }
