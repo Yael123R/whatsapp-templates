@@ -205,6 +205,12 @@ document
     render();
   });
 
+// HU4: Evento para cambiar el criterio de ordenamiento
+document.getElementById("orden").addEventListener("change", function (evento) {
+  state.orden = evento.target.value;
+  render();
+});
+
 lista.addEventListener("click", function (evento) {
   const id = evento.target.dataset.id;
   if (evento.target.classList.contains("btn-eliminar")) eliminarPlantilla(id);

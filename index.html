@@ -107,15 +107,24 @@
         </section>
       </div>
 
-      <!-- Columna derecha: buscador + estadísticas + grid de tarjetas -->
+      <!-- Columna derecha: buscador + ordenador + estadísticas + grid de tarjetas -->
       <div class="grid gap-4 content-start bg-white p-4 rounded-xl shadow">
-        <!-- Buscador por hashtag, título o mensaje (LAB 14 HU4 + Logro 3) -->
-        <input
-          id="buscador"
-          type="text"
-          placeholder="Filtra por hashtag, título o contenido…"
-          class="w-full p-2 border border-slate-300 rounded-lg text-slate-800 bg-white shadow-sm"
-        />
+        <!-- Buscador y Ordenador (HU4) -->
+        <div class="grid gap-2 sm:grid-cols-[1fr_auto]">
+          <input
+            id="buscador"
+            type="text"
+            placeholder="Filtra por hashtag, título o contenido…"
+            class="w-full p-2 border border-slate-300 rounded-lg text-slate-800 bg-white shadow-sm"
+          />
+          <select
+            id="orden"
+            class="p-2 border border-slate-300 rounded-lg text-slate-800 bg-white shadow-sm text-sm"
+          >
+            <option value="recientes">Más recientes</option>
+            <option value="antiguas">Más antiguas</option>
+          </select>
+        </div>
 
         <!-- Panel de estadísticas (LAB 14 HU3) -->
         <aside id="panel-stats" class="bg-slate-200/60 rounded-lg p-3"></aside>
