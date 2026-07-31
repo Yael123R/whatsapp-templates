@@ -158,30 +158,41 @@ function renderSelector() {
     .join("");
 }
 
-// Patrón render
+// Patrón render con manejo de estado vacío (Lab 16 HU2)
 function render() {
+  const visibles = plantillasVisibles();
   lista.innerHTML = "";
 
-  // --- LAB 14 HU4: Recorremos las plantillas visibles ---
-  plantillasVisibles().forEach(function (plantilla) {
-    const fechaTexto = new Date(plantilla.fecha).toLocaleDateString("es-PE");
+  // --- LAB 16 HU2: Verificación de Estado Vacío ---
+  if (visibles.length === 0) {
+    const mensajeVacio =
+      state.plantillas.length === 0
+        ? "Aún no tienes plantillas. ¡Crea la primera!"
+        : "No se encontraron plantillas con ese filtro.";
 
-    // LAB 15 Logro 3: Indicador de si la plantilla fue editada
-    const textoEdicion = plantilla.editadaEl ? " (editado)" : "";
+    lista.innerHTML = `
+      <li class="col-span-full text-center text-slate-400 py-10">
+        <div class="text-4xl mb-2">📭</div>
+        <p class="text-sm text-slate-500">${mensajeVacio}</p>
+      </li>
+    `;
+  } else {
+    // Recorremos y renderizamos las plantillas visibles como de costumbre
+    visibles.forEach(function (plantilla) {
+      const fechaTexto = new Date(plantilla.fecha).toLocaleDateString("es-PE");
+      const textoEdicion = plantilla.editadaEl ? " (editado)" : "";
 
-    // LAB 13 Logro 2: Recortar texto si supera los 60 caracteres
-    const mensajeRecortado =
-      plantilla.mensaje.length > 60
-        ? plantilla.mensaje.slice(0, 60) + "…"
-        : plantilla.mensaje;
+      const mensajeRecortado =
+        plantilla.mensaje.length > 60
+          ? plantilla.mensaje.slice(0, 60) + "…"
+          : plantilla.mensaje;
 
-    const li = document.createElement("li");
+      const li = document.createElement("li");
 
-    li.className =
-      "bg-white p-4 rounded-lg shadow flex flex-col justify-between border border-slate-100";
+      li.className =
+        "bg-white p-4 rounded-lg shadow flex flex-col justify-between border border-slate-100";
 
-    // --- LAB 14 HU1 & HU2: Agregamos botones Editar y Eliminar ---
-    li.innerHTML = `
+      li.innerHTML = `
         <div>
           <div class="flex items-start justify-between gap-2">
             <strong class="text-slate-800">${plantilla.titulo}</strong>
@@ -193,16 +204,13 @@ function render() {
         <div>
           <div class="flex items-center justify-between mt-3 text-xs text-slate-500 border-t pt-2 border-slate-100">
             <span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">${plantilla.hashtag}</span>
-            <!-- Logro 1: Contador de caracteres -->
             <span>${plantilla.mensaje.length} caracteres</span>
           </div>
 
           <div class="flex gap-2 mt-3 pt-2 border-t border-slate-100">
-            <!-- LAB 14 HU2: Botón Editar -->
             <button class="btn-editar text-xs px-2.5 py-1 rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100 transition cursor-pointer" data-id="${plantilla.id}">
               Editar
             </button>
-            <!-- LAB 14 HU1: Botón Eliminar -->
             <button class="btn-eliminar text-xs px-2.5 py-1 rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition cursor-pointer" data-id="${plantilla.id}">
               Eliminar
             </button>
@@ -210,15 +218,16 @@ function render() {
         </div>
       `;
 
-    lista.appendChild(li);
-  });
+      lista.appendChild(li);
+    });
+  }
 
   renderSelector();
 
-  // --- LAB 14 HU3: Renderizar estadísticas sincronizadas al final ---
+  // Renderizar estadísticas sincronizadas
   renderStats();
 
-  // --- LAB 15 HU1: Guardar automáticamente en localStorage ---
+  // Guardar automáticamente en localStorage
   guardar();
 }
 
