@@ -38,7 +38,6 @@
             placeholder="Mensaje (usa {nombre} y {producto})"
             class="p-2 border border-slate-300 rounded"
           ></textarea>
-          <!-- LAB 14 Logro Adicional 2: Id asignado para cambiar texto según el modo -->
           <button
             id="btn-submit"
             class="bg-emerald-600 text-white py-2 rounded font-medium transition cursor-pointer"
@@ -109,30 +108,43 @@
 
       <!-- Columna derecha: buscador + ordenador + estadísticas + grid de tarjetas -->
       <div class="grid gap-4 content-start bg-white p-4 rounded-xl shadow">
-        <!-- Buscador y Ordenador (HU4) -->
+        <!-- Buscador (con botón limpiar - Logro 3) y Ordenador (Logro 2) -->
         <div class="grid gap-2 sm:grid-cols-[1fr_auto]">
-          <input
-            id="buscador"
-            type="text"
-            placeholder="Filtra por hashtag, título o contenido…"
-            class="w-full p-2 border border-slate-300 rounded-lg text-slate-800 bg-white shadow-sm"
-          />
+          <div class="relative">
+            <input
+              id="buscador"
+              type="text"
+              placeholder="Filtra por hashtag, título o contenido…"
+              class="w-full p-2 pr-8 border border-slate-300 rounded-lg text-slate-800 bg-white shadow-sm"
+            />
+            <!-- Logro 3: Botón para limpiar filtro -->
+            <button
+              id="btn-limpiar-filtro"
+              type="button"
+              class="hidden absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 font-bold text-sm"
+              title="Limpiar búsqueda"
+            >
+              ✕
+            </button>
+          </div>
           <select
             id="orden"
             class="p-2 border border-slate-300 rounded-lg text-slate-800 bg-white shadow-sm text-sm"
           >
             <option value="recientes">Más recientes</option>
             <option value="antiguas">Más antiguas</option>
+            <!-- Logro 2: Orden alfabético -->
+            <option value="alfabetico">Título (A-Z)</option>
           </select>
         </div>
 
-        <!-- Panel de estadísticas (LAB 14 HU3) -->
+        <!-- Panel de estadísticas -->
         <aside id="panel-stats" class="bg-slate-200/60 rounded-lg p-3"></aside>
 
         <!-- Lista de plantillas -->
         <ul id="listaPlantillas" class="grid gap-3 sm:grid-cols-2"></ul>
 
-        <!-- LAB 15 HU4: Indicador de estado y botón vaciar todo -->
+        <!-- Indicador de estado y botón vaciar todo -->
         <div
           class="flex items-center justify-between border-t border-slate-200 pt-3 mt-1"
         >
@@ -152,12 +164,13 @@
       </div>
     </div>
 
-    <!-- Modal de Confirmación Propio (Lab 16 HU1) -->
+    <!-- Modal de Confirmación Propio (Lab 16 HU1 + Logro 1) -->
     <div
       id="modal"
       class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
     >
       <div
+        id="modal-contenido"
         class="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full text-center"
       >
         <p id="modal-texto" class="text-slate-700 mb-5">¿Seguro?</p>

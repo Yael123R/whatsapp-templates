@@ -2,7 +2,7 @@ export const state = {
   plantillas: [],
   editandoId: null,
   filtro: "",
-  orden: "recientes", // HU4: Estado por defecto del ordenamiento
+  orden: "recientes",
 };
 
 export function normalizarHashtag(texto) {
@@ -27,18 +27,28 @@ export function contarPorHashtag(plantillas) {
   return conteo;
 }
 
-// HU4: Función pura de ordenamiento (con copia inmutable)
+// Función pura de ordenamiento con copia inmutable (Logro 2 incluido)
 function ordenar(plantillas) {
-  const copia = [...plantillas]; // .sort() muta, por eso copiamos con [...]
-  return state.orden === "antiguas"
-    ? copia.sort((a, b) => new Date(a.fecha) - new Date(b.fecha)) // más antiguas primero
-    : copia.sort((a, b) => new Date(b.fecha) - new Date(a.fecha)); // más recientes primero
+  const copia = [...plantillas];
+
+  if (state.orden === "antiguas") {
+    return copia.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+  }
+
+  if (state.orden === "alfabetico") {
+    // Logro 2: localeCompare ordenando A-Z respetando español
+    return copia.sort((a, b) =>
+      a.titulo.localeCompare(b.titulo, "es", { sensitivity: "base" }),
+    );
+  }
+
+  // Por defecto "recientes"
+  return copia.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 }
 
 export function plantillasVisibles() {
   const filtroTexto = (state.filtro ?? "").toLowerCase();
 
-  // 1. Filtrar
   const filtradas =
     filtroTexto === ""
       ? state.plantillas
@@ -49,6 +59,5 @@ export function plantillasVisibles() {
             plantilla.mensaje.toLowerCase().includes(filtroTexto),
         );
 
-  // 2. HU4: Primero filtra, luego ordena
   return ordenar(filtradas);
 }

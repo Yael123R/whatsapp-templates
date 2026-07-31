@@ -20,9 +20,18 @@ const salida = document.getElementById("mensaje-final");
 const btnGenerar = document.getElementById("btn-generar");
 const btnCopiar = document.getElementById("btn-copiar");
 
+const inputBuscador = document.getElementById("buscador");
+const btnLimpiarFiltro = document.getElementById("btn-limpiar-filtro");
+
 // Modal de confirmación
 const modal = document.getElementById("modal");
+const modalContenido = document.getElementById("modal-contenido");
 let accionPendiente = null;
+
+function cerrarModal() {
+  modal.classList.add("hidden");
+  accionPendiente = null;
+}
 
 function pedirConfirmacion(mensaje, accion) {
   document.getElementById("modal-texto").textContent = mensaje;
@@ -32,18 +41,21 @@ function pedirConfirmacion(mensaje, accion) {
 
 document
   .getElementById("modal-cancelar")
-  .addEventListener("click", function () {
-    modal.classList.add("hidden");
-    accionPendiente = null;
-  });
+  .addEventListener("click", cerrarModal);
 
 document
   .getElementById("modal-confirmar")
   .addEventListener("click", function () {
     if (accionPendiente) accionPendiente();
-    modal.classList.add("hidden");
-    accionPendiente = null;
+    cerrarModal();
   });
+
+// Logro 1 — Cerrar al hacer clic fuera del modal (en el fondo oscuro)
+modal.addEventListener("click", function (evento) {
+  if (!modalContenido.contains(evento.target)) {
+    cerrarModal();
+  }
+});
 
 function agregarPlantilla(titulo, mensaje, hashtag) {
   const nueva = new Template(titulo, mensaje, hashtag);
@@ -198,14 +210,26 @@ export function render() {
 }
 
 // Event Listeners
-document
-  .getElementById("buscador")
-  .addEventListener("input", function (evento) {
-    state.filtro = evento.target.value;
-    render();
-  });
 
-// HU4: Evento para cambiar el criterio de ordenamiento
+// Buscador y Logro 3 (Limpiar filtro)
+inputBuscador.addEventListener("input", function (evento) {
+  state.filtro = evento.target.value;
+  if (state.filtro.length > 0) {
+    btnLimpiarFiltro.classList.remove("hidden");
+  } else {
+    btnLimpiarFiltro.classList.add("hidden");
+  }
+  render();
+});
+
+btnLimpiarFiltro.addEventListener("click", function () {
+  inputBuscador.value = "";
+  state.filtro = "";
+  btnLimpiarFiltro.classList.add("hidden");
+  render();
+});
+
+// Ordenamiento (incluye Logro 2)
 document.getElementById("orden").addEventListener("change", function (evento) {
   state.orden = evento.target.value;
   render();
