@@ -16,6 +16,31 @@ const salida = document.getElementById("mensaje-final");
 const btnGenerar = document.getElementById("btn-generar");
 const btnCopiar = document.getElementById("btn-copiar");
 
+// --- LAB 16 HU1: Lógica del Modal Propio de Confirmación ---
+const modal = document.getElementById("modal");
+let accionPendiente = null;
+
+function pedirConfirmacion(mensaje, accion) {
+  document.getElementById("modal-texto").textContent = mensaje;
+  accionPendiente = accion;
+  modal.classList.remove("hidden"); // Mostrar modal
+}
+
+document
+  .getElementById("modal-cancelar")
+  .addEventListener("click", function () {
+    modal.classList.add("hidden"); // Ocultar sin ejecutar nada
+    accionPendiente = null;
+  });
+
+document
+  .getElementById("modal-confirmar")
+  .addEventListener("click", function () {
+    if (accionPendiente) accionPendiente(); // Ejecuta la acción guardada
+    modal.classList.add("hidden");
+    accionPendiente = null;
+  });
+
 // LAB 13 HU3: Función para normalizar hashtags
 function normalizarHashtag(texto) {
   let limpio = texto.trim().toLowerCase().replaceAll(" ", "");
@@ -38,19 +63,17 @@ function agregarPlantilla(titulo, mensaje, hashtag) {
   state.plantillas.push(nueva);
 }
 
-// --- LAB 14 HU1 & Logro Adicional 1: Confirmación de borrado ---
+// --- LAB 16 HU1: Eliminar plantilla con Modal Propio ---
 function eliminarPlantilla(id) {
   const plantilla = state.plantillas.find((p) => p.id === id);
-  const seguro = confirm(
-    `¿Estás seguro de que deseas eliminar la plantilla "${plantilla ? plantilla.titulo : "seleccionada"}"?`,
-  );
+  const titulo = plantilla ? ` "${plantilla.titulo}"` : "";
 
-  if (seguro) {
+  pedirConfirmacion(`¿Eliminar esta plantilla${titulo}?`, function () {
     state.plantillas = state.plantillas.filter(
       (plantilla) => plantilla.id !== id,
     );
     render();
-  }
+  });
 }
 
 // --- LAB 14 HU2 & Logro Adicional 2: Cargar datos y cambiar estado visual del formulario ---
@@ -305,15 +328,15 @@ function copiarAlMetodoAntiguo(texto) {
   mostrarFeedbackCopiado();
 }
 
-// --- LAB 15 HU4: Vaciar todas las plantillas ---
+// --- LAB 16 HU1: Vaciar todas las plantillas usando el Modal Propio ---
 document.getElementById("btn-vaciar").addEventListener("click", function () {
-  const seguro = confirm(
-    "¿Estás seguro de que deseas eliminar TODAS las plantillas?",
+  pedirConfirmacion(
+    "Esto borrará TODAS tus plantillas. ¿Continuar?",
+    function () {
+      state.plantillas = [];
+      render();
+    },
   );
-  if (seguro) {
-    state.plantillas = [];
-    render();
-  }
 });
 
 // --- LAB 15 Logro 1: Función para exportar plantillas con sangría a la consola ---
